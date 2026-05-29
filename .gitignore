@@ -1,0 +1,5 @@
+atsenv/
+__pycache__/
+*.pyc
+.env
+artifacts/
