@@ -7,3 +7,4 @@ spacy==3.8.0
 pydantic
 streamlit
 requests
+httpx
