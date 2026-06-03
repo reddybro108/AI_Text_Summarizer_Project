@@ -70,6 +70,9 @@ def summarize(request: TextRequest):
             "summary": summary
         }
 
+    except HTTPException:
+        raise
+
     except Exception as e:
 
         raise HTTPException(
@@ -98,6 +101,9 @@ def summarize_meeting(request: MeetingRequest):
             "status": "success",
             "data": result
         }
+
+    except HTTPException:
+        raise
 
     except Exception as e:
 
