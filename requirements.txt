@@ -1,4 +1,9 @@
 fastapi
 uvicorn
-pandas
-numpy
+transformers==4.41.2
+tokenizers==0.19.1
+torch==2.3.1
+spacy==3.8.0
+pydantic
+streamlit
+requests

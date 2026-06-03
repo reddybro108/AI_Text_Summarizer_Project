@@ -1,5 +1,12 @@
 atsenv/
-__pycache__/
+**pycache**/
 *.pyc
+*.pyo
+*.pyd
+.git
+.gitignore
+.vscode
+.idea
+.streamlit
 .env
-artifacts/
+README.md

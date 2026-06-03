@@ -1,0 +1,9 @@
+atsenv/
+__pycache__/
+.git/
+.streamlit/
+.env
+tests/
+.pytest_cache/
+.mypy_cache/
+*.pyc

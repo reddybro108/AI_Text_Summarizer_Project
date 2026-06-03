@@ -1,7 +1,16 @@
 import re
 import spacy
 
-nlp = spacy.load("en_core_web_sm")
+
+def load_nlp():
+    try:
+        return spacy.load("en_core_web_sm")
+    except OSError:
+        # Keep the API alive even if the full model is unavailable.
+        return spacy.blank("en")
+
+
+nlp = load_nlp()
 
 DAYS = [
     "Monday",
