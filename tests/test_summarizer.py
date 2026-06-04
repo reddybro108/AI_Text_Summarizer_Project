@@ -61,6 +61,16 @@ class SummarizerTests(unittest.TestCase):
         self.assertEqual(len(fake_summarizer.calls), 1)
         self.assertEqual(fake_summarizer.calls[0]["text"], "This is a long transcript.")
 
+    def test_generate_summary_chunks_long_transcript(self):
+        fake_summarizer = FakeSummarizer()
+        prediction, _ = load_prediction_module(fake_summarizer)
+
+        long_text = " ".join(["word"] * 2000)
+        result = prediction.generate_summary(long_text)
+
+        self.assertEqual(result, "Mock summary")
+        self.assertGreater(len(fake_summarizer.calls), 1)
+
     def test_generate_summary_returns_empty_message_for_blank_input(self):
         fake_summarizer = FakeSummarizer()
         prediction, _ = load_prediction_module(fake_summarizer)

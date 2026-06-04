@@ -92,6 +92,15 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(payload["original_text"], "This is a meeting transcript.")
         self.assertTrue(payload["summary"].startswith("Summary:"))
 
+    def test_summarize_endpoint_handles_long_transcript(self):
+        long_text = " ".join(["word"] * 2000)
+        response = self.client.post("/summarize", json={"text": long_text})
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["status"], "success")
+        self.assertTrue(payload["summary"].startswith("Summary:"))
+
     def test_summarize_endpoint_rejects_blank_text(self):
         response = self.client.post("/summarize", json={"text": "   "})
 
@@ -110,6 +119,19 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(payload["data"]["key_decisions"], ["The team decided to proceed"])
         self.assertEqual(payload["data"]["action_items"][0]["owner"], "Alice")
         self.assertEqual(payload["data"]["action_items"][0]["deadline"], "Friday")
+
+    def test_summarize_meeting_endpoint_handles_long_transcript(self):
+        long_transcript = " ".join(["word"] * 1990) + " Alice will send the notes by Friday. The team decided to proceed."
+        response = self.client.post(
+            "/summarize-meeting",
+            json={"transcript": long_transcript},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["status"], "success")
+        self.assertGreaterEqual(len(payload["data"]["action_items"]), 1)
+        self.assertGreaterEqual(len(payload["data"]["key_decisions"]), 1)
 
     def test_summarize_meeting_endpoint_rejects_blank_transcript(self):
         response = self.client.post("/summarize-meeting", json={"transcript": ""})

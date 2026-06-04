@@ -1,5 +1,7 @@
 from transformers import pipeline
 
+from app.pipeline.chunking import summarize_with_chunking
+
 summarizer = pipeline(
     "summarization",
     model="facebook/bart-large-cnn"
@@ -7,11 +9,10 @@ summarizer = pipeline(
 
 def generate_summary(text):
 
-    summary = summarizer(
+    return summarize_with_chunking(
         text,
+        summarizer,
+        max_words=400,
         max_length=150,
-        min_length=40,
-        do_sample=False
+        min_length=40
     )
-
-    return summary[0]["summary_text"]

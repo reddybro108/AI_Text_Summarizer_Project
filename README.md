@@ -1,10 +1,14 @@
 ﻿# AI Meeting Intelligence Assistant
 
+[![CI and Docker Publish](https://github.com/reddybro108/AI_Text_Summarizer_Project/actions/workflows/main.yml/badge.svg)](https://github.com/reddybro108/AI_Text_Summarizer_Project/actions/workflows/main.yml)
+
 ## Overview
 
 AI Meeting Intelligence Assistant is an NLP and GenAI-powered application designed to analyze meeting transcripts and automatically generate structured insights.
 
 The system helps teams reduce manual note-taking by extracting meeting summaries, action items, key decisions, owners, and deadlines from meeting discussions.
+
+Long meeting transcripts are automatically chunked with overlap so the summarizers can handle inputs of about 2000 words more reliably while preserving context across chunk boundaries.
 
 Built using FastAPI, Hugging Face Transformers, SpaCy, and Streamlit, the application provides both API-based and interactive UI-driven meeting analysis.
 

@@ -1,6 +1,8 @@
 from transformers import pipeline
 import re
 
+from app.pipeline.chunking import summarize_with_chunking
+
 summarizer = pipeline(
     "summarization",
     model="sshleifer/distilbart-cnn-12-6"
@@ -123,15 +125,14 @@ def extract_owners_and_deadlines(text):
 
 def summarize_meeting(transcript):
 
-    summary = summarizer(
-        transcript,
-        max_length=150,
-        min_length=40,
-        do_sample=False
-    )
-
     return {
-        "meeting_summary": summary[0]["summary_text"],
+        "meeting_summary": summarize_with_chunking(
+            transcript,
+            summarizer,
+            max_words=400,
+            max_length=150,
+            min_length=40
+        ),
         "action_items": extract_action_items(transcript),
         "key_decisions": extract_decisions(transcript),
         "owners_and_deadlines": extract_owners_and_deadlines(transcript)

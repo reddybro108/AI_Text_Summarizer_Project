@@ -1,6 +1,8 @@
 from transformers import pipeline
 import logging
 
+from app.pipeline.chunking import summarize_with_chunking
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
@@ -20,22 +22,13 @@ logger.info("Model loaded successfully")
 def generate_summary(text: str):
 
     try:
-
-        # Validate empty input
-        if not text.strip():
-
-            return "Input text is empty"
-
-        # Generate summary
-        summary = summarizer(
+        return summarize_with_chunking(
             text,
+            summarizer,
+            max_words=400,
             max_length=120,
-            min_length=30,
-            do_sample=False
+            min_length=30
         )
-
-        # Return summarized text
-        return summary[0]["summary_text"]
 
     except Exception as e:
 
