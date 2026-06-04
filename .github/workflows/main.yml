@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI and Docker Publish
 
 on:
   push:
@@ -10,6 +10,13 @@ on:
       - main
       - master
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
@@ -41,6 +48,9 @@ jobs:
     timeout-minutes: 30
     if: github.event_name == 'push'
 
+    env:
+      IMAGE_NAME: reddybro108/meeting-intelligence
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -58,7 +68,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: reddybro108/meeting-intelligence
+          images: ${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest
             type=ref,event=branch

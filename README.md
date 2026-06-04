@@ -217,16 +217,18 @@ docker push reddybro108/meeting-intelligence:latest
 
 ## GitHub Actions
 
-The repository includes a CI workflow in [.github/workflows/main.yml](./.github/workflows/main.yml) that:
+The repository includes a GitHub Actions workflow in [.github/workflows/main.yml](./.github/workflows/main.yml) that:
 
 * installs dependencies
 * runs the unit test suite
-* builds and pushes the Docker image on `push` events
+* builds and pushes the Docker image to Docker Hub on `push` events to `main` or `master`
 
 To enable Docker Hub publishing from GitHub Actions, add these repository secrets in GitHub:
 
 * `DOCKERHUB_USERNAME`
 * `DOCKERHUB_TOKEN`
+
+The published image name is `reddybro108/meeting-intelligence:latest`.
 
 ---
 
