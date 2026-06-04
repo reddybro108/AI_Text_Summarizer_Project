@@ -21,6 +21,7 @@ RUN python -c "import spacy; spacy.load('en_core_web_sm')"
 COPY app ./app
 COPY main.py ./main.py
 COPY streamlit_app.py ./streamlit_app.py
+COPY streamlit_ui.py ./streamlit_ui.py
 
 EXPOSE 8000
 

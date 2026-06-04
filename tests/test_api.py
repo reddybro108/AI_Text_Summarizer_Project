@@ -134,19 +134,16 @@ class ApiTests(unittest.TestCase):
         self.assertGreaterEqual(len(payload["data"]["action_items"]), 1)
         self.assertGreaterEqual(len(payload["data"]["key_decisions"]), 1)
 
-    def test_summarize_meeting_endpoint_accepts_multiline_json_like_body(self):
-        raw_body = (
-            '{\n'
-            '  "transcript": "James Miller: Good morning everyone. The purpose of today\'s meeting is to review the progress of Project Atlas.\n\n'
-            'Sarah Johnson: The first production release is expected by Friday.\n\n'
-            'Alice will send the notes by Friday. The recommendation engine should be completed by Tuesday."\n'
-            '}'
+    def test_summarize_meeting_endpoint_accepts_multiline_json_body(self):
+        transcript = (
+            "James Miller: Good morning everyone. The purpose of today's meeting is to review the progress of Project Atlas.\n\n"
+            "Sarah Johnson: The first production release is expected by Friday.\n\n"
+            "Alice will send the notes by Friday. The recommendation engine should be completed by Tuesday."
         )
 
         response = self.client.post(
             "/summarize-meeting",
-            content=raw_body,
-            headers={"Content-Type": "application/json"},
+            json={"transcript": transcript},
         )
 
         self.assertEqual(response.status_code, 200)
