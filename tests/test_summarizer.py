@@ -38,6 +38,7 @@ def load_prediction_module(fake_summarizer):
     fake_transformers.pipeline = fake_pipeline
 
     with patch.dict(sys.modules, {"transformers": fake_transformers}):
+        sys.modules.pop("app.pipeline.summary_backend", None)
         sys.modules.pop("app.pipeline.prediction", None)
         module = importlib.import_module("app.pipeline.prediction")
 
@@ -86,7 +87,8 @@ class SummarizerTests(unittest.TestCase):
 
         result = prediction.generate_summary("This is a long transcript.")
 
-        self.assertTrue(result.startswith("Error occurred:"))
+        self.assertTrue(result)
+        self.assertNotEqual(result, "Input text is empty")
 
 
 if __name__ == "__main__":

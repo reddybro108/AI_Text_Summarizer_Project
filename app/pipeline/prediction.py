@@ -1,22 +1,12 @@
-from transformers import pipeline
 import logging
 
 from app.pipeline.chunking import summarize_with_chunking
+from app.pipeline.summary_backend import summarize_text
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
-
-# Load summarization pipeline
-logger.info("Loading summarization model...")
-
-summarizer = pipeline(
-    task="summarization",
-    model="sshleifer/distilbart-cnn-12-6"
-)
-
-logger.info("Model loaded successfully")
 
 
 def generate_summary(text: str):
@@ -24,7 +14,16 @@ def generate_summary(text: str):
     try:
         return summarize_with_chunking(
             text,
-            summarizer,
+            lambda chunk, **_: [
+                {
+                    "summary_text": summarize_text(
+                        chunk,
+                        model_name="sshleifer/distilbart-cnn-12-6",
+                        max_length=120,
+                        min_length=30,
+                    )
+                }
+            ],
             max_words=400,
             max_length=120,
             min_length=30

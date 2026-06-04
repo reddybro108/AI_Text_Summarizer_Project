@@ -1,12 +1,7 @@
-from transformers import pipeline
 import re
 
 from app.pipeline.chunking import summarize_with_chunking
-
-summarizer = pipeline(
-    "summarization",
-    model="sshleifer/distilbart-cnn-12-6"
-)
+from app.pipeline.summary_backend import summarize_text
 
 
 def extract_action_items(text):
@@ -128,7 +123,16 @@ def summarize_meeting(transcript):
     return {
         "meeting_summary": summarize_with_chunking(
             transcript,
-            summarizer,
+            lambda chunk, **_: [
+                {
+                    "summary_text": summarize_text(
+                        chunk,
+                        model_name="sshleifer/distilbart-cnn-12-6",
+                        max_length=150,
+                        min_length=40,
+                    )
+                }
+            ],
             max_words=400,
             max_length=150,
             min_length=40

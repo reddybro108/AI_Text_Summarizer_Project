@@ -41,6 +41,7 @@ def load_main_module():
 
     with patch.dict(sys.modules, {"transformers": fake_transformers, "spacy": fake_spacy}):
         for module_name in [
+            "app.pipeline.summary_backend",
             "app.pipeline.prediction",
             "app.pipeline.extractor",
             "app.pipeline.meeting_service",

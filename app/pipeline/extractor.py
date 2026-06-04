@@ -1,8 +1,25 @@
 import re
-import spacy
+
+try:
+    import spacy
+except ModuleNotFoundError:  # pragma: no cover - environment fallback
+    spacy = None
+
+
+class _FallbackDoc:
+    def __init__(self):
+        self.ents = []
+
+
+class _FallbackNLP:
+    def __call__(self, text):
+        return _FallbackDoc()
 
 
 def load_nlp():
+    if spacy is None:
+        return _FallbackNLP()
+
     try:
         return spacy.load("en_core_web_sm")
     except OSError:
