@@ -1,8 +1,9 @@
-from fastapi import FastAPI, HTTPException
-from app.schemas.request_schema import (
-    TextRequest,
-    MeetingRequest
-)
+import json
+import re
+
+from fastapi import FastAPI, HTTPException, Request
+
+from app.schemas.request_schema import TextRequest
 
 from app.pipeline.prediction import generate_summary
 
@@ -80,12 +81,42 @@ def summarize(request: TextRequest):
         )
 
 
-@app.post("/summarize-meeting")
-def summarize_meeting(request: MeetingRequest):
+def _extract_transcript_from_request_body(raw_body: bytes) -> str:
+    body_text = raw_body.decode("utf-8", errors="replace").strip()
+
+    if not body_text:
+        return ""
 
     try:
+        parsed = json.loads(body_text)
+    except json.JSONDecodeError:
+        parsed = None
 
-        if not request.transcript.strip():
+    if isinstance(parsed, dict):
+        transcript = parsed.get("transcript", "")
+        return transcript if isinstance(transcript, str) else str(transcript)
+
+    if isinstance(parsed, str):
+        return parsed
+
+    if not body_text.startswith("{"):
+        return body_text
+
+    match = re.search(r'"transcript"\s*:\s*"(.*)"\s*}\s*$', body_text, re.S)
+    if match:
+        return match.group(1).strip()
+
+    return body_text
+
+
+@app.post("/summarize-meeting")
+async def summarize_meeting(request: Request):
+
+    try:
+        raw_body = await request.body()
+        transcript = _extract_transcript_from_request_body(raw_body)
+
+        if not transcript.strip():
 
             raise HTTPException(
                 status_code=400,
@@ -93,7 +124,7 @@ def summarize_meeting(request: MeetingRequest):
             )
 
         result = analyze_meeting(
-            request.transcript
+            transcript
         )
 
         return {
